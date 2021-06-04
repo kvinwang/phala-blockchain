@@ -37,6 +37,6 @@ pallet-indices = { version = "3.0.0", path = "../../substrate/frame/indices" }
 balances = { version = "3.0.0", package = "pallet-balances", path = "../../substrate/frame/balances" }
 sp-keyring = { version = "3.0.0", package = "sp-keyring", path = "../../substrate/primitives/keyring" }
 
-phala-types = { path = "../../common/types" }
+phala-types = { path = "../../crates/phala-types" }
 trie-storage = { path = "../../crates/trie-storage" }
 rpc-ext = { path = "../../standalone/rpc-ext" }

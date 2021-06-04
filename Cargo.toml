@@ -10,7 +10,7 @@ exclude = [
 ]
 
 members = [
-	"common/types",
+	"crates/phala-types",
 	"standalone/executor",
 	"standalone/rpc",
     "standalone/node",
