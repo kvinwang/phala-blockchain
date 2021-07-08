@@ -58,3 +58,18 @@ pub async fn fetch_mq_ingress_seq(client: &XtClient, sender: MessageOrigin) -> R
         .or(Ok(0))
 }
 
+
+pub async fn get_paraid(client: &XtClient) -> Result<Option<Vec<u8>>, Error> {
+    let para_key = todo!("TODO.kevin");
+    get_storage(&client, None, StorageKey(para_key)).await
+}
+
+pub async fn get_para_head_key(para_id: &Vec<u8>) -> StorageKey {
+    StorageKey(storage_map_key_vec("Paras", "Heads", &hex::encode(para_id)))
+}
+
+pub fn get_parachain_heads(
+    head: Vec<u8>,
+) -> Result<Vec<u8>, Error> {
+    Ok(Vec::<u8>::decode(&mut head.as_slice()).map_err(|_| Error::FailedToDecode)?)
+}
