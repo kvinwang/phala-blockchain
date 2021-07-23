@@ -1,3 +1,5 @@
+{% set Number = "uint32" -%}
+{% set Hash = "bytes" -%}
 
 syntax = "proto3";
 
@@ -9,6 +11,9 @@ package pruntime_rpc_generated;
 service PhactoryAPI {
   // Get basic information about Phactory state.
   rpc GetInfo (google.protobuf.Empty) returns (PhactoryInfo) {}
+
+  // Sync the parent chain header
+  rpc SyncHeader (HeadersToSync) returns (SyncedTo) {}
 }
 
 // Basic information about a Phactory instance.
@@ -42,3 +47,36 @@ message PhactoryInfo {
     // Local estimated benchmark score.
     uint64 score = 13;
 }
+
+message SyncedTo {
+    uint32 synced_to = 1;
+}
+
+message HeadersToSync {
+    repeated HeaderToSync headers = 1;
+}
+
+message HeaderToSync {
+    Header header = 1;
+    optional bytes justification = 2;
+}
+
+message Header {
+    {{Hash}} parent_hash = 1;
+    {{Number}} number = 2;
+    {{Hash}} state_root = 3;
+    {{Hash}} extrinsics_root = 4;
+    // Digest digest = 5;
+}
+
+// message Digest {
+//   repeated oneof logs {
+//     {{Hash}} ChangesTrieRoot = 1;
+//     // PreRuntime(ConsensusEngineId, Vec<u8>),
+//     // Consensus(ConsensusEngineId, Vec<u8>),
+//     // Seal(ConsensusEngineId, Vec<u8>),
+//     // ChangesTrieSignal(ChangesTrieSignal),
+//     // Other(Vec<u8>),
+//     bytes Other = 6;
+//   }
+// }

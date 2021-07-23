@@ -1,6 +1,6 @@
 use super::*;
 use enclave_api::prpc::phactory_api_server::{PhactoryApi, PhactoryApiServer};
-use enclave_api::prpc::PhactoryInfo;
+use enclave_api::prpc::{PhactoryInfo, HeadersToSync, SyncedTo};
 
 #[no_mangle]
 pub extern "C" fn ecall_prpc_request(
@@ -127,5 +127,13 @@ impl PhactoryApi for Server {
     /// Get basic information about Phactory state.
     fn get_info(&self, _request: ()) -> Result<PhactoryInfo, prpc::server::Error> {
         Ok(get_info())
+    }
+
+    /// Sync the parent chain header
+    fn sync_header(
+        &self,
+        _request: HeadersToSync,
+    ) -> Result<SyncedTo, prpc::server::Error> {
+        todo!()
     }
 }
