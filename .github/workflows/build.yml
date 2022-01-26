@@ -39,9 +39,9 @@ jobs:
       - name: Download pherry
         run: curl https://files.kvin.wang:8443/pherry -o ./target/release/pherry
       - name: Download pruntime
-        run: curl https://files.kvin.wang:8443/pruntime -o ./target/release/pruntime
+        run: curl https://files.kvin.wang:8443/pruntime -o ./standalone/pruntime/bin/pruntime
       - name: Download pruntime.manifest
-        run: curl https://files.kvin.wang:8443/pruntime.manifest -o ./standalone/pruntime/bin/pruntime
+        run: curl https://files.kvin.wang:8443/pruntime.manifest -o ./standalone/pruntime/bin/pruntime.manifest
       - name: Change permission
         run: chmod +x ./target/release/phala-node ./target/release/pherry ./standalone/pruntime/bin/pruntime
       - name: Run E2E tests
