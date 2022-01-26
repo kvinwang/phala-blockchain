@@ -44,6 +44,8 @@ jobs:
         run: curl https://files.kvin.wang:8443/pruntime.manifest -o ./standalone/pruntime/bin/pruntime.manifest
       - name: Change permission
         run: chmod +x ./target/release/phala-node ./target/release/pherry ./standalone/pruntime/bin/pruntime
+      - name: Run
+        run: cd ./standalone/pruntime/bin/ && mkdir data && gramine-direct pruntime
       - name: Run E2E tests
         run: yarn set version berry && cd ./e2e/ && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn && yarn test || ls -l phala-e2e-*/** && cat phala-e2e-*/*.log
 
