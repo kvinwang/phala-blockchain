@@ -41,7 +41,7 @@ jobs:
       - name: Download pruntime
         run: curl https://files.kvin.wang:8443/pruntime -o ./target/release/pruntime
       - name: Download pruntime.manifest
-        run: curl https://files.kvin.wang:8443/pruntime.manifest -o ./target/release/pruntime.manifest
+        run: curl https://files.kvin.wang:8443/pruntime.manifest -o ./standalone/pruntime/bin/pruntime
       - name: Change permission
         run: chmod +x ./target/release/phala-node ./target/release/pherry ./standalone/pruntime/bin/pruntime
       - name: Run E2E tests
