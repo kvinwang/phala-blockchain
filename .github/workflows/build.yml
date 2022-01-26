@@ -32,6 +32,8 @@ jobs:
           node-version: 16.x
       - name: Install yarn 2
         run: sudo npm install -g yarn && yarn set version berry
+      - name: mkdir
+        run: mkdir -p ./target/release
       - name: Download phala-node
         run: curl https://files.kvin.wang:8443/phala-node -o ./target/release/phala-node
       - name: Download pherry
