@@ -23,12 +23,14 @@ jobs:
 
       - name: Pack logs if fail
         id: packlogs
+        if: always()
         run: |
           if [[ ${{ steps.e2e.outcome }} == failure ]]; then
             tar czvf e2e-logs.tar.gz e2e
           fi
       - name: Upload logs if fail
         #if: ${{ steps.packlogs.outcome == "success" }}
+        if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: e2e-logs
