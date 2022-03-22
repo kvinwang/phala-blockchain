@@ -18,17 +18,11 @@ jobs:
         with:
           submodules: 'true'
       - name: Run E2E tests
-        id: e2e
+        id: testa
         run: echo "/opt/intel/sgxsdk/lib64/" | sudo tee /etc/ld.so.conf.d/intel-libsgx.conf | sudo ldconfig && source /opt/intel/sgxsdk/environment && cd ./standalone/pruntime/bin/ && ./app -c 0
 
       - name: Pack logs if fail
         id: packlogs
-        if: always() && steps.e2e.outcome == "failure"
+        if: always() && steps.testa.outcome == "failure"
         run: tar czvf e2e-logs.tar.gz e2e
-      - name: Upload logs if fail
-        if: always() && steps.packlogs.outcome == "success"
-        uses: actions/upload-artifact@v3
-        with:
-          name: e2e-logs
-          path: e2e-logs.tar.gz
 
