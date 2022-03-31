@@ -7643,7 +7643,7 @@ dependencies = [
  "ink_lang_macro",
  "proc-macro-crate 1.1.3",
  "proc-macro2 1.0.36",
- "rustfmt-snippet",
+ "quote 1.0.15",
  "syn 1.0.86",
  "unzip3",
 ]
@@ -7669,6 +7669,16 @@ version = "0.1.0"
 dependencies = [
  "parity-scale-codec",
  "pink-extension-macro",
+]
+
+[[package]]
+name = "pink-sidevm-macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro-crate 1.1.3",
+ "proc-macro2 1.0.36",
+ "rustfmt-snippet",
+ "syn 1.0.86",
 ]
 
 [[package]]
