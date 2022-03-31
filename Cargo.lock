@@ -2330,6 +2330,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ee2626afccd7561a06cf1367e2950c4718ea04565e20fb5029b6c7d8ad09abcf"
 
 [[package]]
+name = "dynasm"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47b1801e630bd336d0bbbdbf814de6cc749c9a400c7e3d995e6adfd455d0c83c"
+dependencies = [
+ "bitflags",
+ "byteorder",
+ "lazy_static",
+ "proc-macro-error",
+ "proc-macro2 1.0.36",
+ "quote 1.0.15",
+ "syn 1.0.86",
+]
+
+[[package]]
+name = "dynasmrt"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d428afc93ad288f6dffc1fa5f4a78201ad2eec33c5a522e51c181009eb09061"
+dependencies = [
+ "byteorder",
+ "dynasm",
+ "memmap2 0.5.3",
+]
+
+[[package]]
 name = "ed25519"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7623,6 +7649,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "pink-sidevm"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "loupe",
+ "wasmer",
+ "wasmer-compiler-singlepass",
+ "wasmer-engine",
+ "wasmer-engine-universal",
+ "wasmer-tunables",
+]
+
+[[package]]
+name = "pink-sidevm-env"
+version = "0.1.0"
+dependencies = [
+ "parity-scale-codec",
+ "pink-extension-macro",
+]
+
+[[package]]
 name = "pkg-config"
 version = "0.3.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12636,6 +12683,25 @@ dependencies = [
  "smallvec",
  "target-lexicon",
  "tracing",
+ "wasmer-compiler",
+ "wasmer-types",
+ "wasmer-vm",
+]
+
+[[package]]
+name = "wasmer-compiler-singlepass"
+version = "2.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5432e993840cdb8e6875ddc8c9eea64e7a129579b4706bd91b8eb474d9c4a860"
+dependencies = [
+ "byteorder",
+ "dynasm",
+ "dynasmrt",
+ "lazy_static",
+ "loupe",
+ "more-asserts",
+ "rayon",
+ "smallvec",
  "wasmer-compiler",
  "wasmer-types",
  "wasmer-vm",
