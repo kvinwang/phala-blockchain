@@ -135,6 +135,18 @@ enum Action {
         #[clap(subcommand)]
         what: Import,
     },
+    /// Import genesis or headers from a file into the cache database
+    Export {
+        /// The database file to use
+        #[clap(long, default_value = "cache.db")]
+        db: String,
+        /// From block
+        from: u32,
+        /// To block
+        to: u32,
+        /// Output filename
+        output: String,
+    },
     /// Run the cache server
     Serve {
         /// The database file to use
@@ -315,6 +327,20 @@ async fn main() -> anyhow::Result<()> {
                 }
             }
             cache.flush()?;
+        }
+        Action::Export { db, from, to, output  } => {
+            let cache = db::CacheDB::open(&db)?;
+            let mut output = File::create(&output)?;
+            for block in from..=to {
+                if let Some(x) = cache.get_storage_changes(block) {
+                    cache::Record::new(&x).write(&mut output);
+                    if block % 1000 == 0 {
+                        println!("{block} written");
+                    }
+                } else {
+                    println!("{block} not found");
+                }
+            }
         }
         Action::Serve { db } => {
             web_api::serve(&db).await?;
