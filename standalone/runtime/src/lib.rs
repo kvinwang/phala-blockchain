@@ -109,6 +109,7 @@ pub use phala_pallets::{
 	pallet_mining,
 	pallet_stakepool,
 	pallet_fat,
+	pallet_fat_tokenomic,
 	puppets,
 };
 
@@ -1304,6 +1305,11 @@ impl pallet_fat::Config for Runtime {
 	type SidevmCodeSizeLimit = ConstU32<{1024*1024*8}>;
 }
 
+impl pallet_fat_tokenomic::Config for Runtime {
+	type Event = Event;
+	type Currency = Balances;
+}
+
 impl puppets::parachain_info::Config for Runtime {}
 impl puppets::parachain_system::Config for Runtime {}
 
@@ -1357,6 +1363,7 @@ construct_runtime!(
 		PhalaMining: pallet_mining,
 		PhalaStakePool: pallet_stakepool,
 		PhalaFatContracts: pallet_fat,
+		PhalaFatTokenomic: pallet_fat_tokenomic,
 
 		// Put them here to make sure pherry could be compiled with phala's metadata.
 		ParachainInfo: puppets::parachain_info,
