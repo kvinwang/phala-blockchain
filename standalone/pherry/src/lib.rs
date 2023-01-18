@@ -28,7 +28,7 @@ pub mod types;
 
 use crate::error::Error;
 use crate::types::{
-    Block, BlockNumber, ConvertTo, Hash, Header, NotifyReq, NumberOrHex, ParachainApi, PrClient,
+    BlockNumber, ConvertTo, Hash, Header, NotifyReq, NumberOrHex, ParachainApi, PrClient,
     RelaychainApi, SignedBlock, SrSigner,
 };
 use phactory_api::blocks::{
@@ -45,6 +45,8 @@ use notify_client::NotifyClient;
 use phala_types::AttestationProvider;
 
 pub use phaxt::connect as subxt_connect;
+
+type Block = ChainBlockResponse<phaxt::Config>;
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -558,7 +560,7 @@ async fn batch_sync_block(
             if block_buf[header_idx as usize]
                 .justifications
                 .as_ref()
-                .and_then(|v| v.get(GRANDPA_ENGINE_ID))
+                .and_then(|v| v.iter().find(|j| j.0 == GRANDPA_ENGINE_ID))
                 .is_some()
             {
                 break;
