@@ -2,7 +2,7 @@ use crate::GRANDPA_ENGINE_ID;
 use anyhow::{anyhow, Result};
 use codec::{Decode, Encode};
 use phaxt::{
-    subxt::{self, rpc::NumberOrHex},
+    subxt::{self, rpc::types::NumberOrHex},
     BlockNumber, Header, ParachainApi, RelaychainApi,
 };
 use std::io::{Read, Write};
@@ -333,9 +333,9 @@ pub async fn fetch_genesis_info(
         .block;
     let hash = api
         .rpc()
-        .block_hash(Some(subxt::rpc::BlockNumber::from(NumberOrHex::Number(
-            genesis_block_number as _,
-        ))))
+        .block_hash(Some(subxt::rpc::types::BlockNumber::from(
+            NumberOrHex::Number(genesis_block_number as _),
+        )))
         .await?
         .expect("No genesis block?");
     let set_proof = crate::get_authority_with_proof_at(api, hash).await?;

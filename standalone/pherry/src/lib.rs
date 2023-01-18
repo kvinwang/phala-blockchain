@@ -13,6 +13,8 @@ use phaxt::rpc::ExtraRpcExt as _;
 use phaxt::{subxt, RpcClient};
 use sp_core::{crypto::Pair, sr25519};
 use sp_finality_grandpa::{AuthorityList, SetId, VersionedAuthorityList, GRANDPA_AUTHORITIES_KEY};
+use subxt::config::Header as _;
+use subxt::rpc::types::ChainBlockResponse;
 
 mod endpoint;
 mod error;
@@ -26,7 +28,7 @@ pub mod types;
 
 use crate::error::Error;
 use crate::types::{
-    Block, BlockNumber, Hash, Header, NotifyReq, NumberOrHex, ParachainApi, PrClient,
+    Block, BlockNumber, ConvertTo, Hash, Header, NotifyReq, NumberOrHex, ParachainApi, PrClient,
     RelaychainApi, SignedBlock, SrSigner,
 };
 use phactory_api::blocks::{
@@ -218,7 +220,10 @@ pub struct Args {
     attestation_provider: RaOption,
 
     /// Use IAS RA method, this is compatible with Pherry 1.x
-    #[arg(short = 'r', help = "Use IAS as RA method, enable this will override attestation-provider")]
+    #[arg(
+        short = 'r',
+        help = "Use IAS as RA method, enable this will override attestation-provider"
+    )]
     use_ias: bool,
 
     /// Try to load chain state from the latest block that the worker haven't registered at.
@@ -261,7 +266,7 @@ async fn get_header_hash<T: subxt::Config>(
     client: &phaxt::Client<T>,
     h: Option<u32>,
 ) -> Result<T::Hash> {
-    let pos = h.map(|h| subxt::rpc::BlockNumber::from(NumberOrHex::Number(h.into())));
+    let pos = h.map(|h| subxt::rpc::types::BlockNumber::from(NumberOrHex::Number(h.into())));
     let hash = match pos {
         Some(_) => client
             .rpc()
@@ -276,7 +281,7 @@ async fn get_header_hash<T: subxt::Config>(
 async fn get_block_at<T: subxt::Config>(
     client: &phaxt::Client<T>,
     h: Option<u32>,
-) -> Result<(SignedBlock<T::Header, T::Extrinsic>, T::Hash)> {
+) -> Result<(ChainBlockResponse<T>, T::Hash)> {
     let hash = get_header_hash(client, h).await?;
     let block = client
         .rpc()
@@ -573,7 +578,7 @@ async fn batch_sync_block(
         let header_batch: Vec<HeaderToSync> = block_batch
             .iter()
             .map(|b| HeaderToSync {
-                header: b.block.header.clone(),
+                header: b.block.header.convert_to(),
                 justification: b
                     .justifications
                     .clone()
@@ -795,7 +800,7 @@ async fn sync_parachain_header(
         info!("parachain headers not found in cache");
         for b in next_headernum..=para_fin_block_number {
             info!("fetching parachain header {}", b);
-            let num = subxt::rpc::BlockNumber::from(NumberOrHex::Number(b.into()));
+            let num = subxt::rpc::types::BlockNumber::from(NumberOrHex::Number(b.into()));
             let hash = para_api.rpc().block_hash(Some(num)).await?;
             let hash = match hash {
                 Some(hash) => hash,
@@ -863,9 +868,9 @@ async fn init_runtime(
             let genesis_block = get_block_at(api, Some(start_header)).await?.0.block;
             let hash = api
                 .rpc()
-                .block_hash(Some(subxt::rpc::BlockNumber::from(NumberOrHex::Number(
-                    start_header as _,
-                ))))
+                .block_hash(Some(subxt::rpc::types::BlockNumber::from(
+                    NumberOrHex::Number(start_header as _),
+                )))
                 .await?
                 .expect("No genesis block?");
             let set_proof = get_authority_with_proof_at(api, hash).await?;
@@ -1265,7 +1270,7 @@ async fn bridge(
             if block.justifications.is_some() {
                 debug!("block with justification at: {}", block.block.header.number);
             }
-            sync_state.blocks.push(block.clone());
+            sync_state.blocks.push(block);
         }
 
         // send the blocks to pRuntime in batch

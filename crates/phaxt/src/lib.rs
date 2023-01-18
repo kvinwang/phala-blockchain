@@ -3,10 +3,8 @@ use std::{ops::Deref, sync::Arc};
 
 use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
-use subxt::{
-    ext::sp_core::sr25519,
-    tx::{PolkadotExtrinsicParams, PolkadotExtrinsicParamsBuilder},
-};
+use sp_core::sr25519;
+use subxt::config::polkadot::{PolkadotExtrinsicParams, PolkadotExtrinsicParamsBuilder};
 
 mod chain_api;
 pub mod dynamic;
@@ -41,7 +39,7 @@ pub use subxt;
 pub type Index = <Config as subxt::Config>::Index;
 pub type BlockNumber = <Config as subxt::Config>::BlockNumber;
 pub type Hash = <Config as subxt::Config>::Hash;
-pub type Hashing = <Config as subxt::Config>::Hashing;
+// pub type Hashing = <Config as subxt::Config>::Hashing;
 pub type AccountId = <Config as subxt::Config>::AccountId;
 pub type Address = <Config as subxt::Config>::Address;
 pub type Header = <Config as subxt::Config>::Header;
