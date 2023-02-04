@@ -1,4 +1,4 @@
-require('dotenv').config();
+log::error!("cache result: {result:?}");require('dotenv').config();
 const { assert } = require('chai');
 const path = require('path');
 const portfinder = require('portfinder');
@@ -609,7 +609,6 @@ describe('A full stack', function () {
                 alice,
             );
             assert.isFalse(await checkUntil(async () => {
-                debugger;
                 const { output } = await ContractSystemChecker.query.onBlockEndCalled(certAlice, {});
                 return output.asOk.valueOf();
             }, 6000 * 2), 'Set hook should not success without granting admin first');

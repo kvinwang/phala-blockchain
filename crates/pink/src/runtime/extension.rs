@@ -9,8 +9,7 @@ use phala_crypto::sr25519::{Persistence, KDF};
 use phala_types::contract::ConvertTo;
 use pink_extension::{
     chain_extension::{
-        self as ext, HttpRequest, HttpResponse, PinkExtBackend, CallResult, SigType,
-        StorageQuotaExceeded,
+        self as ext, HttpRequest, HttpResponse, PinkExtBackend, SigType, StorageQuotaExceeded,
     },
     dispatch_ext_call, CacheOp, EcdhPublicKey, EcdsaPublicKey, EcdsaSignature, Hash, PinkEvent,
 };
@@ -211,14 +210,8 @@ impl PinkExtBackend for CallInQuery {
         &self,
         key: Cow<[u8]>,
         value: Cow<[u8]>,
-    ) -> Result<CallResult<(), StorageQuotaExceeded>, Self::Error> {
-        let result = local_cache::set(
-            self.address.as_ref(),
-            &key,
-            &value,
-        );
-        log::error!("cache result: {result:?}");
-        Ok(result)
+    ) -> Result<Result<(), StorageQuotaExceeded>, Self::Error> {
+        Ok(local_cache::set(self.address.as_ref(), &key, &value))
     }
 
     fn cache_set_expiration(&self, key: Cow<[u8]>, expire: u64) -> Result<(), Self::Error> {
@@ -342,7 +335,7 @@ impl PinkExtBackend for CallInCommand {
         &self,
         key: Cow<[u8]>,
         value: Cow<[u8]>,
-    ) -> Result<CallResult<(), StorageQuotaExceeded>, Self::Error> {
+    ) -> Result<Result<(), StorageQuotaExceeded>, Self::Error> {
         deposit_pink_event(
             self.as_in_query.address.clone(),
             PinkEvent::CacheOp(CacheOp::Set {

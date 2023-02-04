@@ -61,7 +61,7 @@ impl ext::PinkExtBackend for MockExtension {
         &self,
         key: Cow<[u8]>,
         value: Cow<[u8]>,
-    ) -> Result<ext::CallResult<(), ext::StorageQuotaExceeded>, Self::Error> {
+    ) -> Result<Result<(), ext::StorageQuotaExceeded>, Self::Error> {
         Ok(local_cache::set(&[], &key, &value))
     }
 

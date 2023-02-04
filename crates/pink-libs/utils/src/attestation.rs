@@ -1,6 +1,6 @@
+use alloc::vec::Vec;
 ///! Utilities to create and verify off-chain attestation
 use core::fmt;
-use alloc::vec::Vec;
 use pink::chain_extension::{signing, SigType};
 use pink_extension as pink;
 use scale::{Decode, Encode};
@@ -43,7 +43,7 @@ impl Verifier {
 
 /// An attestation generator
 #[derive(Encode, Decode, Clone)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo,))]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
 pub struct Generator {
     pub privkey: Vec<u8>,
 }

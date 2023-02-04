@@ -97,8 +97,6 @@ impl ink::env::chain_extension::FromStatusCode for ErrorCode {
     }
 }
 
-pub type CallResult<T, E> = Result<T, E>;
-
 /// Extensions for the ink runtime defined by fat contract.
 #[pink_extension_macro::chain_extension]
 pub trait PinkExt {

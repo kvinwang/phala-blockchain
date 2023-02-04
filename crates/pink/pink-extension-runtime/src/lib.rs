@@ -7,8 +7,7 @@ use std::{
 
 use pink_extension::{
     chain_extension::{
-        self as ext, HttpRequest, HttpResponse, PinkExtBackend, CallResult, SigType,
-        StorageQuotaExceeded,
+        self as ext, HttpRequest, HttpResponse, PinkExtBackend, SigType, StorageQuotaExceeded,
     },
     Balance, EcdhPublicKey, EcdsaPublicKey, EcdsaSignature, Hash,
 };
@@ -194,7 +193,11 @@ impl<T: PinkRuntimeEnv, E: From<&'static str>> PinkExtBackend for DefaultPinkExt
         Ok(pubkey)
     }
 
-    fn cache_set(&self, _key: Cow<[u8]>, _value: Cow<[u8]>) -> Result<CallResult<(), StorageQuotaExceeded>, Self::Error> {
+    fn cache_set(
+        &self,
+        _key: Cow<[u8]>,
+        _value: Cow<[u8]>,
+    ) -> Result<Result<(), StorageQuotaExceeded>, Self::Error> {
         Ok(Ok(()))
     }
 
