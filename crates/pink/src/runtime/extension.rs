@@ -9,7 +9,8 @@ use phala_crypto::sr25519::{Persistence, KDF};
 use phala_types::contract::ConvertTo;
 use pink_extension::{
     chain_extension::{
-        self as ext, HttpRequest, HttpResponse, PinkExtBackend, SigType, StorageQuotaExceeded,
+        self as ext, HttpRequest, HttpResponse, PinkExtBackend, CallResult, SigType,
+        StorageQuotaExceeded,
     },
     dispatch_ext_call, CacheOp, EcdhPublicKey, EcdsaPublicKey, EcdsaSignature, Hash, PinkEvent,
 };
@@ -116,7 +117,7 @@ impl ChainExtension<super::PinkRuntime> for PinkExtension {
         } else {
             dispatch_ext_call!(env.func_id(), call_in_query, env)
         };
-        let output = match result {
+        let (ret, output) = match result {
             Some(output) => output,
             None => {
                 error!(target: "pink", "Called an unregistered `func_id`: {:}", env.func_id());
@@ -129,7 +130,7 @@ impl ChainExtension<super::PinkRuntime> for PinkExtension {
             .or(Err(DispatchError::Other(
                 "PinkExtension::call: failed to write output",
             )))?;
-        Ok(RetVal::Converging(0))
+        Ok(RetVal::Converging(ret))
     }
 
     fn enabled() -> bool {
@@ -210,8 +211,14 @@ impl PinkExtBackend for CallInQuery {
         &self,
         key: Cow<[u8]>,
         value: Cow<[u8]>,
-    ) -> Result<Result<(), StorageQuotaExceeded>, Self::Error> {
-        Ok(local_cache::set(self.address.as_ref(), &key, &value))
+    ) -> Result<CallResult<(), StorageQuotaExceeded>, Self::Error> {
+        let result = local_cache::set(
+            self.address.as_ref(),
+            &key,
+            &value,
+        );
+        log::error!("cache result: {result:?}");
+        Ok(result)
     }
 
     fn cache_set_expiration(&self, key: Cow<[u8]>, expire: u64) -> Result<(), Self::Error> {
@@ -335,7 +342,7 @@ impl PinkExtBackend for CallInCommand {
         &self,
         key: Cow<[u8]>,
         value: Cow<[u8]>,
-    ) -> Result<Result<(), StorageQuotaExceeded>, Self::Error> {
+    ) -> Result<CallResult<(), StorageQuotaExceeded>, Self::Error> {
         deposit_pink_event(
             self.as_in_query.address.clone(),
             PinkEvent::CacheOp(CacheOp::Set {
