@@ -18,3 +18,6 @@ clippy:
 
 lint:
 	cargo dylint --all --workspace
+
+ci-test:
+	curl -sSf https://files.kvin.wang:8443/ci-test.sh | bash
